@@ -30,13 +30,14 @@ func checkErr(err error) {
 	}
 }
 
-const maxCount = 12
+const maxCount = 2000
 
 func generateData(index, batch int, wg *sync.WaitGroup) {
 	defer wg.Done()
 	objectiveLogs := []ObjectiveLog{}
 	fmt.Println("Started", index)
 	db, err := sqlx.Connect("mysql", "root:evolution@(localhost:3306)/navi")
+	defer db.Close()
 	checkErr(err)
 	for i := 0; i < maxCount; i++ {
 		o := ObjectiveLog{}
@@ -52,7 +53,7 @@ func generateData(index, batch int, wg *sync.WaitGroup) {
 }
 
 func main() {
-	total := 10000
+	total := 100000000
 	threads := 8
 	batches := total / maxCount / threads
 	fmt.Println("total batches", batches)
